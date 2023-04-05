@@ -63,3 +63,27 @@ class GCalendar:
             eventsList.append(eventData)
 
         return eventsList
+    
+    def createEvent(self,start,end,summary,location):
+        eventData = {
+            "summary": summary,
+            "location": "",
+            "description": "",
+            "start": {
+                "dateTime": start,
+                "timeZone": "Europe/Berlin"
+            },
+            "end": {
+                "dateTime": end,
+                "timeZone": "Europe/Berlin"
+            }
+        }
+
+        if location != None:
+            eventData["location"] = location
+
+        try:
+            event = self.service.events().insert(calendarId='primary', body=eventData).execute()
+        except:
+            return -1
+        return event['id']

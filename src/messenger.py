@@ -56,7 +56,26 @@ class Messenger:
             self.mqttConnection.publish("appointment/next",json.dumps(eventData))
 
     def __mailMQTTCreatecallback(self,client, userdata, msg):
-        pass
+        try:
+            createData = json.loads(str(msg.payload.decode("utf-8")))
+        except:
+            print("Can't decode message")
+            return
+        
+        reqKeys = ['start','end','summary']
+
+        if not all(key in createData for key in reqKeys):
+            print("not all keys available")
+            return
+        
+        try:
+            datetime.datetime.strptime(createData['start'], '%Y-%m-%dT%H:%M:%S%z')
+            datetime.datetime.strptime(createData['end'], '%Y-%m-%dT%H:%M:%S%z')
+        except:
+            print("wrong time format")
+            return
+        
+        print(self.calendarClient.createEvent(createData["start"],createData["end"],createData["summary"],createData.get('location', None)))
 
     def __mailMQTTDeletecallback(self,client, userdata, msg):
         try:
