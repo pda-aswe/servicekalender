@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 
 #https://developers.google.com/resources/api-libraries/documentation/calendar/v3/python/latest/calendar_v3.events.html
 
+#umwandeln in start und stopp der gewünschten zeit
 def getEvents(service, count):
     events = None
     try:
