@@ -1,12 +1,13 @@
 import paho.mqtt.client as mqtt
 import os
+import datetime
 import gcalendar
 import json
 
 class Messenger:
     def __init__(self):
         self.connected = False
-        self.mailClient = gcalendar.GCalendar()
+        self.calendarClient = gcalendar.GCalendar()
 
         #aufbau der MQTT-Verbindung
         self.mqttConnection = mqtt.Client()
@@ -50,15 +51,58 @@ class Messenger:
         pass
 
     def __mailMQTTNextcallback(self,client, userdata, msg):
-        pass
+        eventData = self.calendarClient.nextEvent()
+        if eventData:
+            self.mqttConnection.publish("appointment/next",json.dumps(eventData))
 
     def __mailMQTTCreatecallback(self,client, userdata, msg):
         pass
 
     def __mailMQTTDeletecallback(self,client, userdata, msg):
-        pass
+        try:
+            deleteData = json.loads(str(msg.payload.decode("utf-8")))
+        except:
+            print("Can't decode message")
+            return
+        
+        reqKeys = ['id']
+
+        if not all(key in deleteData for key in reqKeys):
+            print("not all keys available")
+            return
+        
+        self.calendarClient.deleteEvent(deleteData["id"])
+
+
     def __mailMQTTUpdatecallback(self,client, userdata, msg):
         pass
 
     def __mailMQTTRangecallback(self,client, userdata, msg):
-        pass
+        try:
+            rangeData = json.loads(str(msg.payload.decode("utf-8")))
+        except:
+            print("Can't decode message")
+            return
+        
+        reqKeys = ['start','end']
+
+        if not all(key in rangeData for key in reqKeys):
+            print("not all keys available")
+            return
+        
+        try:
+            datetime.datetime.strptime(rangeData['start'], '%Y-%m-%dT%H:%M:%S%z')
+            datetime.datetime.strptime(rangeData['end'], '%Y-%m-%dT%H:%M:%S%z')
+        except:
+            print("wrong time format")
+            return
+        
+        events = self.calendarClient.rangeEvents(rangeData['start'],rangeData['end'])
+
+        eventsData = {"start":rangeData['start'],"end":rangeData['end'],"events":events}
+        self.mqttConnection.publish("appointment/range",json.dumps(eventsData))
+        
+
+
+        
+        

@@ -23,6 +23,7 @@ Anfrage durch: `req/appointment/next`
    "location":"<STRING-MIT-DEM-STANDORT>"
 }
 ```
+Der Key location ist optional.
 
 ## Datenstruktur des Topics appointment/delete
 ```json
@@ -43,7 +44,7 @@ Anfrage durch: `req/appointment/next`
 ```
 Jeder Key ist optional außer id. Dadurch können nur bestimmte sachen im Termin angepasst werden.
 
-## Datenstruktur des Topics appointment/range
+## Datenstruktur des Topics req/appointment/range
 ```json
 {
    "start":"2023-04-04T22:00:00+02:00",
@@ -51,7 +52,7 @@ Jeder Key ist optional außer id. Dadurch können nur bestimmte sachen im Termin
 }
 ```
 
-## Datenstruktur des Topics req/appointment/range
+## Datenstruktur des Topics appointment/range
 ```json
 {
    "start":"2023-04-04T22:00:00+02:00",
