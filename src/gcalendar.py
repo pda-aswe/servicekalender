@@ -27,7 +27,7 @@ class GCalendar:
             return {}
         
         events = events_result.get('items', [])
-        if len(events) >= 0:
+        if len(events) > 0:
             nextEvent['start'] = events[0]['start']['dateTime']
             nextEvent['end'] = events[0]['end']['dateTime']
             nextEvent['id'] = events[0]['id']
@@ -45,6 +45,17 @@ class GCalendar:
         return returnStatus
     
     def rangeEvents(self,start,end):
+
+        try:
+            startT = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S%z')
+            endT = datetime.datetime.strptime(end, '%Y-%m-%dT%H:%M:%S%z')
+            if endT < startT:
+                print("invalid data")
+                return []
+        except:
+            print("wrong time format")
+            return []
+
         eventsList = []
         try:
             events_result = self.service.events().list(calendarId='primary', timeMin=start, timeMax=end, singleEvents=True, orderBy='startTime').execute()
@@ -78,6 +89,16 @@ class GCalendar:
                 "timeZone": "Europe/Berlin"
             }
         }
+
+        try:
+            startT = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S%z')
+            endT = datetime.datetime.strptime(end, '%Y-%m-%dT%H:%M:%S%z')
+            if endT < startT:
+                print("invalid data")
+                return -1
+        except:
+            print("wrong time format")
+            return -1
 
         if location != None:
             eventData["location"] = location

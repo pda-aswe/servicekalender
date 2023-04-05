@@ -75,7 +75,7 @@ class Messenger:
             print("wrong time format")
             return
         
-        print(self.calendarClient.createEvent(createData["start"],createData["end"],createData["summary"],createData.get('location', None)))
+        self.calendarClient.createEvent(createData["start"],createData["end"],createData["summary"],createData.get('location', None))
 
     def __mailMQTTDeletecallback(self,client, userdata, msg):
         try:
