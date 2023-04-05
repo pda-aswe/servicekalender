@@ -94,7 +94,28 @@ class Messenger:
 
 
     def __mailMQTTUpdatecallback(self,client, userdata, msg):
-        pass
+        try:
+            updateData = json.loads(str(msg.payload.decode("utf-8")))
+        except:
+            print("Can't decode message")
+            return
+        
+        reqKeys = ['id']
+
+        if not all(key in updateData for key in reqKeys):
+            print("not all keys available")
+            return
+        
+        try:
+            if "start" in updateData:
+                datetime.datetime.strptime(updateData['start'], '%Y-%m-%dT%H:%M:%S%z')
+            if "end" in updateData:
+                datetime.datetime.strptime(updateData['end'], '%Y-%m-%dT%H:%M:%S%z')
+        except:
+            print("wrong time format")
+            return
+        
+        self.calendarClient.updateEvent(updateData)
 
     def __mailMQTTRangecallback(self,client, userdata, msg):
         try:

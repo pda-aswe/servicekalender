@@ -87,3 +87,32 @@ class GCalendar:
         except:
             return -1
         return event['id']
+    
+    def updateEvent(self,data):
+        if "id" not in data:
+            return None
+
+        eventData = {}
+        if "start" in data:
+            eventData["start"] = {
+                "dateTime": data['start'],
+                "timeZone": "Europe/Berlin"
+            }
+        
+        if "end" in data:
+            eventData["end"] = {
+                "dateTime": data['end'],
+                "timeZone": "Europe/Berlin"
+            }
+        
+        if 'location' in data:
+            eventData['location'] = data['location']
+
+        if 'summary' in data:
+            eventData['summary'] = data['summary']
+
+        try:
+            event = self.service.events().patch(calendarId='primary', eventId=data['id'], body=eventData).execute()
+        except:
+            return None
+        return event
