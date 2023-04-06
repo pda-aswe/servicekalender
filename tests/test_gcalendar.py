@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 @patch("os.path.exists")
 @patch("google.oauth2.credentials.Credentials.from_authorized_user_file")
-def test_nextEvent():
+def test_nextEvent(mock_google,mock_os):
     obj = gcalendar.GCalendar()
 
     #hier kommt immer {} zurück, da man nur events mocken kann, man aber die gwünschten returndaten nicht herstellen kann und deswegen immer im try, except landet
