@@ -3,6 +3,8 @@ from unittest.mock import patch
 
 #HIER GLAUB ICH KEINE GUTE MÖGLICHKEIT ZU TESTEN
 
+@patch("os.path.exists")
+@patch("google.oauth2.credentials.Credentials.from_authorized_user_file")
 def test_nextEvent():
     obj = gcalendar.GCalendar()
 
